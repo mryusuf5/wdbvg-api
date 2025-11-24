@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ImageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[ORM\Entity(repositoryClass: ImageRepository::class)]
 class Image
@@ -25,6 +26,8 @@ class Image
 
     #[ORM\Column(nullable: true)]
     private ?int $place_id = null;
+
+    private ?UploadedFile $file = null;
 
     public function getId(): ?int
     {
@@ -75,6 +78,18 @@ class Image
     public function setPlaceId(?int $place_id): static
     {
         $this->place_id = $place_id;
+
+        return $this;
+    }
+
+    public function getFile(): ?UploadedFile
+    {
+        return $this->file;
+    }
+
+    public function setFile(?UploadedFile $file): static
+    {
+        $this->file = $file;
 
         return $this;
     }
