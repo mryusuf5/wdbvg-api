@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\AudioRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[ORM\Entity(repositoryClass: AudioRepository::class)]
 class Audio
@@ -19,8 +20,11 @@ class Audio
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $place_id = null;
+    #[ORM\ManyToOne(targetEntity: Place::class, inversedBy: "audio")]
+    #[ORM\JoinColumn(referencedColumnName: "id", nullable: true, onDelete: "SET NULL")]
+    private ?Place $place = null;
+
+    private ?UploadedFile $file = null;
 
     public function getId(): ?int
     {
@@ -51,14 +55,26 @@ class Audio
         return $this;
     }
 
-    public function getPlaceId(): ?int
+    public function getPlace(): ?Place
     {
-        return $this->place_id;
+        return $this->place;
     }
 
-    public function setPlaceId(?int $place_id): static
+    public function setPlace(?Place $place): static
     {
-        $this->place_id = $place_id;
+        $this->place = $place;
+
+        return $this;
+    }
+
+    public function getFile(): ?UploadedFile
+    {
+        return $this->file;
+    }
+
+    public function setFile(?UploadedFile $file): static
+    {
+        $this->file = $file;
 
         return $this;
     }

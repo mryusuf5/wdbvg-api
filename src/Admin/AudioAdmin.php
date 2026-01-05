@@ -2,6 +2,7 @@
 
 namespace App\Admin;
 
+use App\Entity\Audio;
 use App\Entity\Image;
 use App\Entity\Place;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
@@ -16,7 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints\File;
 
-class ImageAdmin extends AbstractAdmin
+class AudioAdmin extends AbstractAdmin
 {
     private string $projectDir;
 
@@ -34,14 +35,14 @@ class ImageAdmin extends AbstractAdmin
         $this->handleFileUpload($object);
     }
 
-    private function handleFileUpload(Image $image): void
+    private function handleFileUpload(Audio $audio): void
     {
-        $file = $image->getFile();
+        $file = $audio->getFile();
         if (!$file instanceof UploadedFile) {
             return;
         }
 
-        $uploadDir = $this->projectDir . '/public/uploads/images';
+        $uploadDir = $this->projectDir . '/public/uploads/audios';
 
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
@@ -50,33 +51,31 @@ class ImageAdmin extends AbstractAdmin
         $filename = uniqid('', true) . '.' . $file->guessExtension();
         $file->move($uploadDir, $filename);
 
-        $image->setUrl('/uploads/images/' . $filename);
-        $image->setFile(null);
+        $audio->setUrl('/uploads/audios/' . $filename);
+        $audio->setFile(null);
     }
 
     protected function configureFormFields(FormMapper $form): void
     {
         $subject = $this->getSubject();
-        $imagePath = '';
+        $audioPath = '';
 
         if($subject->getUrl())
         {
-            $imagePath = $subject->getUrl();
+            $audioPath = $subject->getUrl();
         }
         $fileFormOptions = [
-            'required' => false,
-            'label' => 'Image',
+            'required' => true,
+            'label' => 'Audio',
             'constraints' => [
                 new File([
-                    'maxSize' => '10M',
-                    'mimeTypes' => ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+                    'maxSize' => '500M',
                 ])
             ],
-            'help' => '<img src="' . $imagePath . '" width=300 height=300 style="object-fit: contain;" />',
+            'help' => '<audio controls> <source src="' . $audioPath . '" type="audio/mpeg" /> </audio>',
             'help_html' => true
         ];
         $form->add('title', TextType::class);
-        $form->add('description', TextType::class);
         $form->add('place', EntityType::class, [
             'class' => Place::class,
         ]);

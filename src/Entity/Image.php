@@ -24,8 +24,9 @@ class Image
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $place_id = null;
+    #[ORM\ManyToOne(targetEntity: Place::class, inversedBy: "image")]
+    #[ORM\JoinColumn(referencedColumnName: "id", nullable: true, onDelete: "SET NULL")]
+    private ?Place $place = null;
 
     private ?UploadedFile $file = null;
 
@@ -70,14 +71,14 @@ class Image
         return $this;
     }
 
-    public function getPlaceId(): ?int
+    public function getPlace(): ?Place
     {
-        return $this->place_id;
+        return $this->place;
     }
 
-    public function setPlaceId(?int $place_id): static
+    public function setPlace(?Place $place): static
     {
-        $this->place_id = $place_id;
+        $this->place = $place;
 
         return $this;
     }

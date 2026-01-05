@@ -23,6 +23,18 @@ services:
         tags:
             - { name: sonata.admin, model_class: App\Entity\Image, manager_type: orm, label: Images }
 
+    admin.audio:
+        class: App\Admin\AudioAdmin
+        calls:
+            - [ setProjectDir, [ '%kernel.project_dir%' ] ]
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Audio, manager_type: orm, label: Audio }
+
+    admin.place:
+        class: App\Admin\PlaceAdmin
+        tags:
+            - { name: sonata.admin, model_class: App\Entity\Place, manager_type: orm, label: Place }
+
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
