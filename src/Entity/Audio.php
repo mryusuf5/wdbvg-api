@@ -2,28 +2,36 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\AudioRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AudioRepository::class)]
+#[ApiResource]
 class Audio
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['place:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['place:read'])]
     private ?string $url = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['place:read'])]
     private ?string $title = null;
 
-    #[ORM\ManyToOne(targetEntity: Place::class, inversedBy: "audio")]
-    #[ORM\JoinColumn(referencedColumnName: "id", nullable: true, onDelete: "SET NULL")]
+    // IMPORTANT: inversedBy must match Place::$audios
+    #[ORM\ManyToOne(targetEntity: Place::class, inversedBy: 'audios')]
+    #[ORM\JoinColumn(referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     private ?Place $place = null;
 
+    // Not persisted, not serialized
     private ?UploadedFile $file = null;
 
     public function getId(): ?int
@@ -39,7 +47,6 @@ class Audio
     public function setUrl(?string $url): static
     {
         $this->url = $url;
-
         return $this;
     }
 
@@ -51,7 +58,6 @@ class Audio
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -63,7 +69,6 @@ class Audio
     public function setPlace(?Place $place): static
     {
         $this->place = $place;
-
         return $this;
     }
 
@@ -75,7 +80,6 @@ class Audio
     public function setFile(?UploadedFile $file): static
     {
         $this->file = $file;
-
         return $this;
     }
 }
